@@ -1,8 +1,71 @@
-DROP TABLE IF EXISTS `customers`;
+-- MySQL Workbench Synchronization
+-- Generated: 2021-07-09 13:46
+-- Model: New Model
+-- Version: 1.0
+-- Project: Name of the project
+-- Author: david
 
-CREATE TABLE IF NOT EXISTS `customers` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `first_name` VARCHAR(40) DEFAULT NULL,
-    `surname` VARCHAR(40) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-);
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+CREATE SCHEMA IF NOT EXISTS `imsdb` DEFAULT CHARACTER SET utf8 ;
+DROP TABLE IF EXISTS `customers`;
+DROP TABLE IF EXISTS `item`;
+DROP TABLE IF EXISTS `order`;
+DROP TABLE IF EXISTS `order_item`;
+
+CREATE TABLE IF NOT EXISTS `imsdb`.`customers` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `forename` VARCHAR(45) NOT NULL,
+  `surname` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `imsdb`.`items` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `value` DECIMAL(6,2) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `imsdb`.`orders` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `cust_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `cust_id_idx` (`cust_id` ASC) VISIBLE,
+  CONSTRAINT `cust_id`
+    FOREIGN KEY (`cust_id`)
+    REFERENCES `imsdb`.`customers` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `imsdb`.`order_items` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `order_id` INT(11) NOT NULL,
+  `item_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `item_id_idx` (`item_id` ASC) VISIBLE,
+  INDEX `order_id_idx` (`order_id` ASC) VISIBLE,
+  CONSTRAINT `item_id`
+    FOREIGN KEY (`item_id`)
+    REFERENCES `imsdb`.`items` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `order_id`
+    FOREIGN KEY (`order_id`)
+    REFERENCES `imsdb`.`orders` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
