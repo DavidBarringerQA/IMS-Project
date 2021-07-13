@@ -32,6 +32,12 @@ public class OrderDAOTest {
   }
 
   @Test
+  public void testCreateFail() {
+    final Order created = new Order(2L, null, null);
+    assertEquals(null, DAO.create(created));
+  }
+
+  @Test
   public void testReadAll() {
     List<Order> expected = new ArrayList<>();
     List<Item> items = new ArrayList<>();
@@ -59,8 +65,19 @@ public class OrderDAOTest {
 
   @Test
   public void testUpdate() {
-    final Order updated = new Order(1L, new Customer(1L, "jordan", "harrison"), new ArrayList<Item>());
+    List<Item> items = new ArrayList<>();
+    items.add(new Item(1L, "ball", 1.00));
+    items.add(new Item(1L, "ball", 1.00));
+    final Order updated = new Order(1L, new Customer(1L, "jordan", "harrison"), items);
     assertEquals(updated, DAO.update(updated));
+  }
+
+  @Test
+  public void testUpdateFail() {
+    List<Item> items = new ArrayList<>();
+    items.add(new Item(0L, "ball", 1.00));
+    final Order updated = new Order(1L, new Customer(1L, "jordan", "harrison"), items);
+    assertEquals(null, DAO.update(updated));
   }
 
   @Test

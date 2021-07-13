@@ -8,6 +8,6 @@ public class OrderTest {
 
 	@Test
 	public void testEquals() {
-		EqualsVerifier.simple().forClass(Customer.class).verify();
+		EqualsVerifier.simple().forClass(Order.class).verify();
 	}
 }
