@@ -8,9 +8,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.qa.ims.persistance.domain.Order;
-import com.qa.ims.persistance.domain.Customer;
-import com.qa.ims.persistance.domain.Item;
+import com.qa.ims.persistence.domain.Order;
+import com.qa.ims.persistence.domain.Customer;
+import com.qa.ims.persistence.domain.Item;
 import com.qa.ims.utils.DBUtils;
 
 public class OrderDAOTest {
@@ -36,7 +36,7 @@ public class OrderDAOTest {
     List<Order> expected = new ArrayList<>();
     List<Item> items = new ArrayList<>();
     items.add(new Item(1L, "ball", 1.00));
-    expected.add(2L, new Customer(1L, "jordan", "harrison"), items);
+    expected.add(new Order(1L, new Customer(1L, "jordan", "harrison"), items));
     assertEquals(expected, DAO.readAll());
   }
 

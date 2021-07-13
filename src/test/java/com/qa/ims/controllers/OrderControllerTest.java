@@ -14,6 +14,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.qa.ims.controller.OrderController;
 import com.qa.ims.persistence.dao.OrderDAO;
+import com.qa.ims.persistence.dao.CustomerDAO;
+import com.qa.ims.persistence.dao.ItemDAO;
 import com.qa.ims.persistence.domain.Order;
 import com.qa.ims.persistence.domain.Customer;
 import com.qa.ims.persistence.domain.Item;
@@ -27,19 +29,28 @@ public class OrderControllerTest{
 
   @Mock
   private OrderDAO dao;
+  
+  @Mock
+  private CustomerDAO custDAO;
+  
+  @Mock
+  private ItemDAO itemDAO;
 
   @InjectMocks
   private OrderController controller;
 
   @Test
   public void testCreate(){
+    Long id = 1L;
     final Customer customer = new Customer(1L, "jordan", "harrison");
     List<Item> items = new ArrayList<>();
     items.add(new Item(1L, "ball", 1.00));
-    final Order created = new Order(2L, customer, items);
+    final Order created = new Order(customer, items);
 
     Mockito.when(utils.getString()).thenReturn("add", "done");
     Mockito.when(utils.getLong()).thenReturn(1L, 1L);
+    Mockito.when(custDAO.read(id)).thenReturn(customer);
+    Mockito.when(itemDAO.read(id)).thenReturn(items.get(0));
     Mockito.when(dao.create(created)).thenReturn(created);
     
     assertEquals(created, controller.create());
@@ -65,16 +76,22 @@ public class OrderControllerTest{
 
   @Test
   public void testUpdate() {
-    Order updated = new Order(1L, new Customer(1L, "jordan", "harrison"), new ArrayList<Items>());
+    final Customer customer = new Customer(1L, "jordan", "harrison");
+    List<Item> items = new ArrayList<>();
+    items.add(new Item(1L, "ball", 1.00));
+    Order old = new Order(1L, customer, items);
+    Order updated = new Order(1L, customer, new ArrayList<Item>());
 
-    Mockito.when(utils.getLong()).thenReturn(1L, 1L);
-    Mockito.when(utils.getString()).thenReturn("done");
+    Mockito.when(utils.getLong()).thenReturn(1L, 1L, 1L);
+    Mockito.when(utils.getString()).thenReturn("delete","done");
+    Mockito.when(custDAO.read(1L)).thenReturn(customer);
+    Mockito.when(dao.read(1L)).thenReturn(old);
     Mockito.when(dao.update(updated)).thenReturn(updated);
 
     assertEquals(updated, controller.update());
 
-    Mockito.verify(utils, Mockito.times(2)).getLong();
-    Mockito.verify(utils, Mockito.times(1)).getString();
+    Mockito.verify(utils, Mockito.times(3)).getLong();
+    Mockito.verify(utils, Mockito.times(2)).getString();
     Mockito.verify(dao, Mockito.times(1)).update(updated);
   }
 
