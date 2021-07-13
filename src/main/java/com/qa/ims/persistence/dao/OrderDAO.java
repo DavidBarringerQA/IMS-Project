@@ -28,6 +28,13 @@ public class OrderDAO implements Dao<Order> {
     return items;
   }
 
+  /**
+   * Reads items in an order from a database then returns them in a list
+   *
+   * @param id - the id of the order
+   *
+   * @return - A list of Item objects
+   */
   public List<Item> readItems(Long id){
     try (Connection conn = DBUtils.getInstance().getConnection();
 	 PreparedStatement stmt = conn.prepareStatement("SELECT i.id, i.name, i.value FROM items i " +
@@ -42,7 +49,7 @@ public class OrderDAO implements Dao<Order> {
     }
     return null;
   }
-  
+
   @Override
   public Order modelFromResultSet(ResultSet resultSet) throws SQLException {
     Long id = resultSet.getLong(1);
@@ -51,12 +58,17 @@ public class OrderDAO implements Dao<Order> {
     return new Order(id, customer, items);
   }
 
+  /**
+   * Reads the last inputted order in the system
+   *
+   * @return - the Order object of the last added item in the database
+   */
   public Order readLatest() {
     try (Connection conn = DBUtils.getInstance().getConnection();
 	 Statement stmt = conn.createStatement();
-	 ResultSet rs = stmt.executeQuery("SELECT o.id, c.forename, c.surname FROM orders o " +
+	 ResultSet rs = stmt.executeQuery("SELECT o.id, c.id, c.forename, c.surname FROM orders o " +
 					  "INNER JOIN customers c ON o.cust_id = c.id " +
-					  "ORDER BY id DESC LIMIT 1");){
+					  "ORDER BY o.id DESC LIMIT 1");){
       rs.next();
       return modelFromResultSet(rs);
     } catch (Exception e) {
@@ -66,6 +78,13 @@ public class OrderDAO implements Dao<Order> {
     return null;
   }
 
+  /**
+   * Creates a new order entry in the database
+   * 
+   * @param order - the Order object to be created
+   *
+   * @return - the Order object from the database
+   */
   @Override
   public Order create(Order order) {
     try (Connection conn = DBUtils.getInstance().getConnection();
@@ -87,14 +106,21 @@ public class OrderDAO implements Dao<Order> {
     return null;
   }
 
+  /**
+   * Deletes an order and associated items from the database with given order id
+   *
+   * @param id - the id of the item to be deleted
+   *
+   * @return - the number of rows deleted from the orders table
+   */
   @Override
   public int delete(long id) {
     try (Connection conn = DBUtils.getInstance().getConnection();
-	 PreparedStatement stmt = conn.prepareStatement("DELETE FROM orders WHERE id = ?");
 	 PreparedStatement stmt2 = conn.prepareStatement("DELETE FROM order_items WHERE order_id = ?");){
-      stmt.setLong(1, id);
       stmt2.setLong(1, id);
       stmt2.executeUpdate();
+      PreparedStatement stmt = conn.prepareStatement("DELETE FROM orders WHERE id = ?");
+      stmt.setLong(1, id);
       return stmt.executeUpdate();
     } catch (Exception e) {
       LOGGER.debug(e);
@@ -103,10 +129,17 @@ public class OrderDAO implements Dao<Order> {
     return 0;
   }
 
+  /**
+   * Reads a single order from the database with given id
+   *
+   * @param id - the id of the order to be read
+   *
+   * @return - the Order object with the given id
+   */
   @Override
   public Order read(Long id) {
     try (Connection conn = DBUtils.getInstance().getConnection();
-	 PreparedStatement stmt = conn.prepareStatement("SELECT o.id, c.forename, c.surname FROM orders o " +
+	 PreparedStatement stmt = conn.prepareStatement("SELECT o.id, c.id, c.forename, c.surname FROM orders o " +
 							"INNER JOIN customers c ON o.cust_id = c.id " +
 							"WHERE o.id = ?");){
       stmt.setLong(1, id);
@@ -120,11 +153,16 @@ public class OrderDAO implements Dao<Order> {
     return null;
   }
 
+  /**
+   * Reads all orders from the database
+   *
+   * @return - a List of Order objects of the orders read from the database
+   */
   @Override
   public List<Order> readAll() {
     try (Connection conn = DBUtils.getInstance().getConnection();
 	 Statement stmt = conn.createStatement();
-	 ResultSet rs = stmt.executeQuery("SELECT o.id, c.forename, c.surname FROM orders o " +
+	 ResultSet rs = stmt.executeQuery("SELECT o.id, c.id, c.forename, c.surname FROM orders o " +
 					  "INNER JOIN customers c ON o.cust_id = c.id");){
       List<Order> orders = new ArrayList<>();
       while(rs.next()) {
@@ -138,6 +176,13 @@ public class OrderDAO implements Dao<Order> {
     return null;
   }
 
+  /**
+   * Updates an order in the database
+   *
+   * @param order - the details of the updated order
+   *
+   * @return - the updated Order object read from the database
+   */
   @Override
   public Order update(Order order) {
     try (Connection conn = DBUtils.getInstance().getConnection();

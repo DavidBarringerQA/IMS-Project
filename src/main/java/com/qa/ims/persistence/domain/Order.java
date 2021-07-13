@@ -82,10 +82,11 @@ public class Order {
 
   @Override
   public String toString() {
-    String res = "Order id: " + this.id + "\nCustomer: " + customer.getFirstName() + " " + customer.getSurname() + "\nItems: ";
-    for(Item item : items){
-      res += "\t" + item.getName() + "\t" + item.getValue();
+    String res = "Order id: " + this.id + "\nCustomer: " + customer.getFirstName() + " " + customer.getSurname() + "\nItems:\n";
+    for(int i = 0; i < items.size(); i++){
+      res += "\t[" + (i + 1) + "] " + items.get(i).getName() + "\t" + items.get(i).getValue() + "\n";
     }
+    res+="\nTotal: £" + getTotal() + "\n";
     return res;
   }
 
