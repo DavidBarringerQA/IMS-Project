@@ -159,5 +159,28 @@ public class OrderController implements CrudController<Order> {
     return orderDAO.update(order);
   }
 
+  public Order addItem() {
+    LOGGER.info("Please enter the id of the order you are adding to");
+    Long orderId = utils.getLong();
+    LOGGER.info("Please enter the id of the item you wish to add");
+    Long itemId = utils.getLong();
+    LOGGER.info("Item added");
+    return orderDAO.addItem(orderId, itemId);
+  }
+
+  public Order deleteItem() {
+    LOGGER.info("Please enter the id of the order item to be deleted");
+    Long orderItemId = utils.getLong();
+    LOGGER.info("Item deleted");
+    return orderDAO.deleteItem(orderItemId);
+  }
+
+  public double getCost() {
+    LOGGER.info("Please enter the id of the order you want the cost of");
+    Long orderId = utils.getLong();
+    double cost = orderDAO.getCost(orderId);
+    LOGGER.info("The cost of order " + orderId + " is: £" + cost);
+    return cost;
+  }
   
 }
