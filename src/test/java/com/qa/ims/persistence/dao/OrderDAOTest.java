@@ -67,4 +67,25 @@ public class OrderDAOTest {
   public void testDelete() {
     assertEquals(1, DAO.delete(1));
   }
+
+  @Test
+  public void testAddItem() {
+    List<Item> items = new ArrayList<>();
+    items.add(new Item(1L, "ball", 1.00));
+    items.add(new Item(1L, "ball", 1.00));
+    Order expected = new Order(1L, new Customer(1L, "jordan", "harrison"), items);
+    assertEquals(expected, DAO.addItem(1L, 1L));
+  }
+
+  @Test
+  public void testDeleteItem() {
+    Order expected = new Order(1L, new Customer(1L, "jordan", "harrison"), new ArrayList<Item>());
+    assertEquals(expected, DAO.deleteItem(1L));
+  }
+
+  @Test
+  public void testGetCost(){
+    double expected = 1.00;
+    assertEquals(expected, DAO.getCost(1L), 0.001);
+  }
 }
