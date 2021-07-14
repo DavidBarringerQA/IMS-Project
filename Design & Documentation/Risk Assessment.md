@@ -71,6 +71,30 @@
 
 <tbody>
 <tr>
+<td class="org-left">Incorrect input</td>
+<td class="org-left">The input on the command line doesn't fit the design of the database</td>
+<td class="org-left">Add constraints to database, allow for updating items</td>
+<td class="org-left">Constraints help prevent bad inputs from being stored, the update query allows bad inputs to be corrected</td>
+<td class="org-left">Expected</td>
+<td class="org-left">Minor</td>
+<td class="org-right">8</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+<td class="org-left">Host Computer/s fails</td>
+<td class="org-left">The computer/server responsible for hosting the code/database stop working</td>
+<td class="org-left">Have backups of project and database allowed elsewhere</td>
+<td class="org-left">If the computer/server needs replacing, the system can be set back up easily and is up-to-date</td>
+<td class="org-left">Unlikely</td>
+<td class="org-left">Severe</td>
+<td class="org-right">5</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
 <td class="org-left">&#xa0;</td>
 <td class="org-left">&#xa0;</td>
 <td class="org-left">&#xa0;</td>
