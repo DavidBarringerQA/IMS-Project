@@ -211,7 +211,7 @@ public class OrderDAO implements Dao<Order> {
 	 PreparedStatement stmt = conn.prepareStatement("INSERT INTO order_items (order_id, item_id) VALUES (?, ?)");){
       stmt.setLong(1, orderId);
       stmt.setLong(2, itemId);
-      stmt.executeQuery();
+      stmt.executeUpdate();
       return read(orderId);
     } catch (Exception e) {
       LOGGER.debug(e);
