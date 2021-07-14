@@ -205,4 +205,52 @@ public class OrderDAO implements Dao<Order> {
     }
     return null;
   }
+
+  public Order addItem(Long orderId, Long itemId){
+    try (Connection conn = DBUtils.getInstance().getConnection();
+	 PreparedStatement stmt = conn.prepareStatement("INSERT INTO order_items (order_id, item_id) VALUES (?, ?)");){
+      stmt.setLong(1, orderId);
+      stmt.setLong(2, itemId);
+      stmt.executeUpdate();
+      return read(orderId);
+    } catch (Exception e) {
+      LOGGER.debug(e);
+      LOGGER.error(e.getMessage());
+    }
+    return null;
+  }
+
+  public Order deleteItem(Long orderItemId){
+    try (Connection conn = DBUtils.getInstance().getConnection();
+	 PreparedStatement getOrder = conn.prepareStatement("SELECT order_id FROM order_items WHERE id = ?");
+	 PreparedStatement stmt = conn.prepareStatement("DELETE FROM order_items WHERE id = ?");){
+      getOrder.setLong(1, orderItemId);
+      ResultSet rs = getOrder.executeQuery();
+      rs.next();
+      Long orderId = rs.getLong(1);
+      stmt.setLong(1, orderItemId);
+      stmt.executeUpdate();
+      return read(orderId);
+    } catch (Exception e) {
+      LOGGER.debug(e);
+      LOGGER.error(e.getMessage());
+    }
+    return null;
+  }
+
+  public double getCost(Long orderId){
+    try (Connection conn = DBUtils.getInstance().getConnection();
+	 PreparedStatement stmt = conn.prepareStatement("SELECT SUM(i.value) FROM order_items o " +
+							"INNER JOIN items i on o.item_id = i.id " +
+							"WHERE o.order_id = ?");){
+      stmt.setLong(1, orderId);
+      ResultSet rs = stmt.executeQuery();
+      rs.next();
+      return rs.getDouble(1);
+    } catch (Exception e) {
+      LOGGER.debug(e);
+      LOGGER.error(e.getMessage());
+    }
+    return 0;
+  }
 }

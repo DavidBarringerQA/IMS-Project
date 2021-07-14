@@ -107,4 +107,46 @@ public class OrderControllerTest{
     Mockito.verify(utils, Mockito.times(1)).getLong();
     Mockito.verify(dao, Mockito.times(1)).delete(ID);
   }
+
+  @Test
+  public void testAddItem() {
+    List<Item> items = new ArrayList<>();
+    items.add(new Item(1L, "ball", 1.00));
+    items.add(new Item(1L, "ball", 1.00));
+    Order expected = new Order(1L, new Customer(1L, "jordan", "harrison"), items);
+    
+    Mockito.when(utils.getLong()).thenReturn(1L, 1L);
+    Mockito.when(dao.addItem(1L, 1L)).thenReturn(expected);
+
+    assertEquals(expected, controller.addItem());
+
+    Mockito.verify(utils, Mockito.times(2)).getLong();
+    Mockito.verify(dao, Mockito.times(1)).addItem(1L, 1L);
+  }
+
+  @Test
+  public void testDeleteItem() {
+    Order expected = new Order(1L, new Customer(1L, "jordan", "harrison"), new ArrayList<Item>());
+
+    Mockito.when(utils.getLong()).thenReturn(1L);
+    Mockito.when(dao.deleteItem(1L)).thenReturn(expected);
+
+    assertEquals(expected, controller.deleteItem());
+
+    Mockito.verify(utils, Mockito.times(1)).getLong();
+    Mockito.verify(dao, Mockito.times(1)).deleteItem(1L);
+  }
+
+  @Test
+  public void testGetCost() {
+    double expected = 1.00;
+
+    Mockito.when(utils.getLong()).thenReturn(1L);
+    Mockito.when(dao.getCost(1L)).thenReturn(1.00);
+
+    assertEquals(expected, controller.getCost(), 0.01);
+
+    Mockito.verify(utils, Mockito.times(1)).getLong();
+    Mockito.verify(dao, Mockito.times(1)).getCost(1L);
+  }
 }
