@@ -28,6 +28,12 @@ public class CustomerDAOTest {
 	}
 
 	@Test
+	public void testCreateFail() {
+		final Customer created = new Customer(3L, "chris", null);
+		assertEquals(null, DAO.create(created));
+	}
+
+	@Test
 	public void testReadAll() {
 		List<Customer> expected = new ArrayList<>();
 		expected.add(new Customer(1L, "jordan", "harrison"));
@@ -54,7 +60,19 @@ public class CustomerDAOTest {
 	}
 
 	@Test
+	public void testUpdateFail() {
+		final Customer updated = new Customer(1L, null, "perrins");
+		assertEquals(null, DAO.update(updated));
+
+	}
+
+	@Test
 	public void testDelete() {
 		assertEquals(1, DAO.delete(2));
+	}
+
+	@Test
+	public void testDeleteFail() {
+		assertEquals(0, DAO.delete(1));
 	}
 }

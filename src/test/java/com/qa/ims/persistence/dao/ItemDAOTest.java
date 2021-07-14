@@ -28,6 +28,12 @@ public class ItemDAOTest {
 	}
 
 	@Test
+	public void testCreateFail() {
+		final Item created = new Item(3L, null, 9.50);
+		assertEquals(null, DAO.create(created));
+	}
+
+	@Test
 	public void testReadAll() {
 		List<Item> expected = new ArrayList<>();
 		expected.add(new Item(1L, "ball", 1.00));
@@ -54,7 +60,20 @@ public class ItemDAOTest {
 	}
 
 	@Test
+	public void testUpdateFail() {
+		final Item updated = new Item(0L, "ball", 1.20);
+		assertEquals(null, DAO.update(updated));
+
+	}
+
+	@Test
 	public void testDelete() {
 		assertEquals(1, DAO.delete(2));
 	}
+
+	@Test
+	public void testDeleteFail() {
+		assertEquals(0, DAO.delete(1));
+	}
+
 }
