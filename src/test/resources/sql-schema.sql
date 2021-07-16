@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS `imsdb`.`order_items` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `order_id` INT(11) NOT NULL,
   `item_id` INT(11) NOT NULL,
+  `quantity` INT(10) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `item_id_idx` (`item_id` ASC) VISIBLE,
   INDEX `order_id_idx` (`order_id` ASC) VISIBLE,
