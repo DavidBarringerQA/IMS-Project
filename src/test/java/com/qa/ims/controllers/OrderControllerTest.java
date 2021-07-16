@@ -3,6 +3,7 @@ package com.qa.ims.controllers;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
@@ -43,20 +44,21 @@ public class OrderControllerTest{
   public void testCreate(){
     Long id = 1L;
     final Customer customer = new Customer(1L, "jordan", "harrison");
-    List<Item> items = new ArrayList<>();
-    items.add(new Item(1L, "ball", 1.00));
+    // List<Item> items = new ArrayList<>();
+    HashMap<Item, Long> items = new HashMap<>();
+    items.put(new Item(1L, "ball", 1.00), 1L);
     final Order created = new Order(customer, items);
 
-    Mockito.when(utils.getString()).thenReturn("add","add","delete", "done");
-    Mockito.when(utils.getLong()).thenReturn(1L, 1L, 1L, 2L);
+    Mockito.when(utils.getString()).thenReturn("add","delete","add", "done");
+    Mockito.when(utils.getLong()).thenReturn(1L, 1L, 1L, 1L, 1L, 1L);
     Mockito.when(custDAO.read(id)).thenReturn(customer);
-    Mockito.when(itemDAO.read(id)).thenReturn(items.get(0));
+    Mockito.when(itemDAO.read(id)).thenReturn(new Item(1L, "ball", 1.00));
     Mockito.when(dao.create(created)).thenReturn(created);
     
     assertEquals(created, controller.create());
 
     Mockito.verify(utils, Mockito.times(4)).getString();
-    Mockito.verify(utils, Mockito.times(4)).getLong();
+    Mockito.verify(utils, Mockito.times(6)).getLong();
     Mockito.verify(dao, Mockito.times(1)).create(created);
   }
 
@@ -78,28 +80,30 @@ public class OrderControllerTest{
   public void testCreateBadItem(){
     Long id = 1L;
     final Customer customer = new Customer(1L, "jordan", "harrison");
-    List<Item> items = new ArrayList<>();
-    items.add(new Item(1L, "ball", 1.00));
+    // List<Item> items = new ArrayList<>();
+    HashMap<Item, Long> items = new HashMap<>();
+    items.put(new Item(1L, "ball", 1.00), 1L);
     final Order created = new Order(customer, items);
 
     Mockito.when(utils.getString()).thenReturn("add", "add", "done");
-    Mockito.when(utils.getLong()).thenReturn(1L, 3L, 1L);
+    Mockito.when(utils.getLong()).thenReturn(1L, 1L, 1L, 3L);
     Mockito.when(custDAO.read(id)).thenReturn(customer);
-    Mockito.when(itemDAO.read(id)).thenReturn(items.get(0));
+    Mockito.when(itemDAO.read(id)).thenReturn(new Item(1L, "ball", 1.00));
     Mockito.when(dao.create(created)).thenReturn(created);
     
     assertEquals(created, controller.create());
 
     Mockito.verify(utils, Mockito.times(3)).getString();
-    Mockito.verify(utils, Mockito.times(3)).getLong();
+    Mockito.verify(utils, Mockito.times(4)).getLong();
   }
     
 
   @Test
   public void testReadAll() {
     List<Order> orders = new ArrayList<>();
-    List<Item> items = new ArrayList<>();
-    items.add(new Item(1L, "ball", 1.00));
+    // List<Item> items = new ArrayList<>();
+    HashMap<Item, Long> items = new HashMap<>();
+    items.put(new Item(1L, "ball", 1.00), 1L);
     orders.add(new Order(1L, new Customer(1L, "jordan", "harrison"), items));
 
     Mockito.when(dao.readAll()).thenReturn(orders);
@@ -112,14 +116,16 @@ public class OrderControllerTest{
   @Test
   public void testUpdate() {
     final Customer customer = new Customer(1L, "jordan", "harrison");
-    List<Item> items = new ArrayList<>();
-    items.add(new Item(1L, "ball", 1.00));
+    // List<Item> items = new ArrayList<>();
+    HashMap<Item, Long> items = new HashMap<>();
+    items.put(new Item(1L, "ball", 1.00), 1L);
     Order old = new Order(1L, customer, items);
-    List<Item> newItems = new ArrayList<>();
-    newItems.add(new Item(2L, "mug", 3.50));
+    // List<Item> newItems = new ArrayList<>();
+    HashMap<Item, Long> newItems = new HashMap<>();
+    newItems.put(new Item(2L, "mug", 3.50), 2L);
     Order updated = new Order(1L, customer, newItems);
 
-    Mockito.when(utils.getLong()).thenReturn(1L, 1L, 2L, 1L);
+    Mockito.when(utils.getLong()).thenReturn(1L, 1L, 2L, 2L, 1L);
     Mockito.when(utils.getString()).thenReturn("add", "delete","done");
     Mockito.when(custDAO.read(1L)).thenReturn(customer);
     Mockito.when(itemDAO.read(2L)).thenReturn(new Item(2L, "mug", 3.50));
@@ -128,7 +134,7 @@ public class OrderControllerTest{
 
     assertEquals(updated, controller.update());
 
-    Mockito.verify(utils, Mockito.times(4)).getLong();
+    Mockito.verify(utils, Mockito.times(5)).getLong();
     Mockito.verify(utils, Mockito.times(3)).getString();
     Mockito.verify(dao, Mockito.times(1)).update(updated);
   }
@@ -136,8 +142,9 @@ public class OrderControllerTest{
   @Test
   public void testUpdateBadCustomer() {
     final Customer customer = new Customer(1L, "jordan", "harrison");
-    List<Item> items = new ArrayList<>();
-    items.add(new Item(1L, "ball", 1.00));
+    // List<Item> items = new ArrayList<>();
+    HashMap<Item, Long> items = new HashMap<>();
+    items.put(new Item(1L, "ball", 1.00), 1L);
     Order old = new Order(1L, customer, items);
     Order updated = new Order(1L, null, null);
 
@@ -167,23 +174,23 @@ public class OrderControllerTest{
 
   @Test
   public void testAddItem() {
-    List<Item> items = new ArrayList<>();
-    items.add(new Item(1L, "ball", 1.00));
-    items.add(new Item(1L, "ball", 1.00));
+    // List<Item> items = new ArrayList<>();
+    HashMap<Item, Long> items = new HashMap<>();
+    items.put(new Item(1L, "ball", 1.00), 2L);
     Order expected = new Order(1L, new Customer(1L, "jordan", "harrison"), items);
     
-    Mockito.when(utils.getLong()).thenReturn(1L, 1L);
-    Mockito.when(dao.addItem(1L, 1L)).thenReturn(expected);
+    Mockito.when(utils.getLong()).thenReturn(1L, 1L, 1L);
+    Mockito.when(dao.addItem(1L, 1L, 1L)).thenReturn(expected);
 
     assertEquals(expected, controller.addItem());
 
-    Mockito.verify(utils, Mockito.times(2)).getLong();
-    Mockito.verify(dao, Mockito.times(1)).addItem(1L, 1L);
+    Mockito.verify(utils, Mockito.times(3)).getLong();
+    Mockito.verify(dao, Mockito.times(1)).addItem(1L, 1L, 1L);
   }
 
   @Test
   public void testDeleteItem() {
-    Order expected = new Order(1L, new Customer(1L, "jordan", "harrison"), new ArrayList<Item>());
+    Order expected = new Order(1L, new Customer(1L, "jordan", "harrison"), new HashMap<Item, Long>());
 
     Mockito.when(utils.getLong()).thenReturn(1L);
     Mockito.when(dao.deleteItem(1L)).thenReturn(expected);
